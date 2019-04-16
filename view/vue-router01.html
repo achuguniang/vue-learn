@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>vue-router</title>
+	</head>
+
+	<body>
+		<div id="app">
+			<!-- 5 路由入口 指定跳转到只定入口 -->
+			<router-link to="/home">首页</router-link>
+			<router-link to="/login">登录</router-link>
+
+			<!-- 7 路由出口：用来展示匹配路由视图内容 -->
+			<router-view></router-view>
+
+		</div>
+
+		<script src="js/vue.js"></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+		<script>
+			// 3 创建两个组件
+			const Home = Vue.component('home', {
+				template: '<h1>这是 Home 组件</h1>'
+			})
+			const Login = Vue.component('login', {
+				template: '<h1>这是 Login 组件</h1>'
+			})
+
+			// 4 创建路由对象
+			const router = new VueRouter({
+				routes: [
+					// 路径和组件一一对应
+					{ path: '/', redirect: '/home' },
+					{
+						path: '/home',
+						component: Home
+					},
+					{
+						path: '/login',
+						component: Login
+					}
+				]
+			})
+
+			let vm = new Vue({
+				el: "#app",
+				data() {
+					return {
+
+					}
+				},
+				router
+			})
+		</script>
+	</body>
+
+</html>

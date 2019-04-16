@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>directive</title>
+	<style>
+		
+	</style>
+	
+	
+</head>
+<body>
+	<div id="app">
+		<!--图片加载效果-->
+		<div style="height:300px;background: #eee;">
+			<h3>图片加载效果</h3>
+			<div v-img="val.url" v-for="val in list" style="width: 200px;height: 200px;float: left;"></div>
+		</div>
+		
+		
+		<div id="hook-arguments-example" v-demo:foo.a.b="message"></div>
+		
+		<!--对象字面量-->
+		<div v-demo1="{ color: 'white', text: 'hello!' }"></div>
+		
+	</div>
+	
+	<script src="js/vue.js"></script>
+	<script>
+		//谷歌图片的加载做得非常优雅，在图片未完成加载前，用随机的背景色占位，图片加载完成后才直接渲染出来。用自定义指令可以非常方便的实现这个功能。
+		Vue.directive('img', {
+	        inserted: function(el, binding) {
+	          var color = Math.floor(Math.random() * 1000000);
+	          el.style.backgroundColor = '#' + color;
+	 
+	          var img = new Image();
+	          img.src = binding.value;
+	          img.onload = function() {
+	            setTimeout(function() {
+	              el.style.backgroundImage = 'url(' + binding.value + ')';
+	            },
+	            1000);
+	          }
+	        }
+	    });
+	    
+	    
+	    Vue.directive('demo', {
+		  bind: function (el, binding, vnode) {
+		    var s = JSON.stringify
+		    el.innerHTML =
+		      'name: '       + s(binding.name) + '<br>' +
+		      'value: '      + s(binding.value) + '<br>' +
+		      'expression: ' + s(binding.expression) + '<br>' +
+		      'argument: '   + s(binding.arg) + '<br>' +
+		      'modifiers: '  + s(binding.modifiers) + '<br>' +
+		      'vnode keys: ' + Object.keys(vnode).join(', ')
+		  }
+		})
+	    
+	    Vue.directive('demo1', function (el, binding) {
+		  console.log(binding.value.color) // => "white"
+		  console.log(binding.value.text)  // => "hello!"
+		})
+	    
+
+		let vm = new Vue({
+			el:'#app',
+			data:{
+				list : [
+					{url : "img/1.jpg"},
+					{url : "img/2.jpg"},
+					{url : "img/3.jpg"}
+				],
+				currentTime:Date.now(),
+				message: 'hello!'
+			},
+			
+			methods:{
+				
+
+			}
+		});
+	</script>
+</body>
+</html>

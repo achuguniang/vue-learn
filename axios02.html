@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>axios</title>
+	<style>
+		.current{
+			background-color:#ccc;
+		}
+	</style>
+	<script src="js/vue.js"></script>
+	
+</head>
+<body>
+	<div id="app">
+		<button @click="getAxios1"> get请求（url参数） </button>
+		<button @click="getAxios2"> get请求（参数分离） </button>
+
+	</div>
+	
+	
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+		let vm = new Vue({
+			el:'#app',
+			data:{
+				url : ""
+			},
+			methods:{
+				,
+
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>父组件给子组件传值</title>
+	</head>
+
+	<body>
+		<div id="app">
+			<!-- 组件A： -->
+			<com-a></com-a>
+			<!-- 组件B： -->
+			<com-b></com-b>
+		</div>
+
+		<script src="js/vue.js"></script>
+
+		<script>
+			// 中间组件
+			var bus = new Vue()
+			// 通信组件
+			var vm = new Vue({
+				el: '#app',
+				components: {
+					comB: {
+						template: '<p>组件A告诉我：{{msg}}</p>',
+						data() {
+							return {
+								msg: ''
+							}
+						},
+						created() {
+							// 给中间组件绑定自定义事件 注意:如果用到this 需要用箭头函数
+							bus.$on('tellComB', (msg) => {
+								this.msg = msg
+							})
+						}
+					},
+					comA: {
+						template: '<button @click="emitFn">告诉B</button>',
+						methods: {
+							emitFn() {
+								// 触发中间组件中的自定义事件
+								bus.$emit('tellComB', '土豆土豆我是南瓜')
+							}
+						}
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

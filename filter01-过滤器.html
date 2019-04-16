@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>filter</title>
+	<style>
+		
+	</style>
+	
+	
+</head>
+<body>
+	<div id="app">
+
+		
+		<!--个数加零-->
+		<div style="height:100px;background: #eee;">
+			<h3>个数加零</h3>
+			<h3>{{3 | addZero}}</h3>
+		</div>
+		
+		<!--保留小数-->
+		<div style="height:100px;background: #eee;">
+			<h3>保留小数</h3>
+			<h3>{{12.045 | number(2)}}</h3>
+		</div>
+		
+		<!--日期格式化-->
+		<div style="height:100px;background: #eee;">
+			<h3>保留小数</h3>
+			<h3>{{currentTime | date}}</h3>
+		</div>
+		
+		<!--保留小数（局部指令）-->
+		<div style="height:100px;background: #eee;">
+			<h3>保留小数</h3>
+			<h3>{{12.045 | numberJ(2)}}</h3>
+		</div>
+		
+	</div>
+	
+	<script src="js/vue.js"></script>
+	<script>
+		
+	    
+	    /**
+		 * 自定义全局过滤器
+		 * 单数加零
+		 */
+		Vue.filter("addZero",function( data ){
+			return data<10?'0'+data:data;
+		})
+		
+		/**
+		 * 自定义全局过滤器
+		 * 保留小数
+		 */
+		Vue.filter('number',(data,n) => {
+			return data.toFixed(n);
+		});
+	    
+	    /**
+		 * 自定义全局过滤器
+		 * 日期格式化
+		 */
+	    Vue.filter('date',data => {
+			let d=new Date(data);
+			return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+		});
+	    
+
+		let vm = new Vue({
+			el:'#app',
+			data:{
+				list : [
+					{url : "img/1.jpg"},
+					{url : "img/2.jpg"},
+					{url : "img/3.jpg"}
+				],
+				currentTime:Date.now()
+			},
+			filters:{ //局部过滤器
+				numberJ:(data,n) => {
+					return data.toFixed(n);
+				}
+			},
+			methods:{
+				
+
+			}
+		});
+	</script>
+</body>
+</html>

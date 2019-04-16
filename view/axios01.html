@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>axios</title>
+		
+		<style>
+			[v-cloak]{
+				display: none;
+			}
+		</style>
+		
+		
+
+	</head>
+
+	<body>
+		<div id="app" style="height: 100%;" v-cloak="">
+			
+			<button @click="getRequest">Get请求</button>
+			
+			<button @click="postRequest">Post请求</button>
+			
+			<button @click="allRequest">allRequest请求</button>
+			
+		</div>
+
+		<script src="../js/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+			
+		
+		<script>
+			
+//			var instance = axios.create({
+//			  baseURL: 'http://jysz.jyyy.so/kf-service/',
+//			  timeout: 1000,
+//			  headers: {'X-Custom-Header': 'foobar'}
+//			});
+			
+			
+			
+			let vm = new Vue({
+				el : "#app",
+				data : {
+					
+				},
+				
+				created : function(){
+					
+				},
+				
+				methods : {
+					getRequest(){
+						/*// 为给定 ID 的 user 创建请求
+						axios.get('json/post.json?ID=12345')
+						  .then(function (response) {
+						    console.log(response);
+						  })
+						  .catch(function (error) {
+						    console.log(error);
+						  });*/
+						 
+						 axios.get('../json/post.json', {            
+						    params: {
+						      ID: 12345
+						    }
+						  })
+						  .then(function (response) {
+						    console.log(response);
+						  })
+						  .catch(function (error) {
+						    console.log(error);
+						  });
+					},
+					
+					postRequest(){
+						axios.post('../json/post.json', {
+						    firstName: 'Fred',
+						    lastName: 'Flintstone'
+						  })
+						  .then(function (response) {
+						    console.log(response);
+						  })
+						  .catch(function (error) {
+						    console.log(error);
+						  });
+					},
+					
+					getUserAccount(){
+						return axios.get('../json/post.json');
+					},
+					
+					getUserPermissions(){
+						return axios.get('../json/post1.json');
+					},
+					
+					allRequest(){
+						var _this = this;
+						axios.all([_this.getUserAccount(), _this.getUserPermissions()])
+						  .then(axios.spread(function (acct, perms) {
+						    console.info( acct );
+						    
+						     console.info( perms );
+						  }));
+					}
+				}
+				
+			})
+		</script>
+
+		
+
+	</body>
+
+</html>

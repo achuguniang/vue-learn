@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>computed</title>
+		<style>
+			.step {
+				min-height: 100px;
+				background: #eee;
+				padding: 20px;
+				margin-bottom: 20px;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div id="app">
+			<!--1 计算属性的getter函数-->
+			<div class="step">
+				<h2>计算属性的getter函数</h2>
+				<div>
+			      <input type="text" v-model="message" />
+			      <div>{{changeMessage}}</div>
+			    </div>
+
+			</div>
+			
+			<!--2.计算属性的setter函数-->
+			<div class="step">
+				<h2>计算属性的getter函数</h2>
+				<div>
+			      {{didi}}
+			      {{family}}
+			    </div>
+			    <div>
+			      {{didiFamily}}
+			    </div>
+			    
+			    <button @click="changeDidi">更换-changeDidi</button>
+			    <button @click="changeDf">更换-Df</button>
+			</div>
+			
+			<!--3.计算属性的setter函数-->
+			<div class="step">
+				<h2>3.计算属性的缓存</h2>
+				<div>
+			      <input type="text" v-model="message1" />
+			      <div>{{now}}</div>
+			    </div>
+			</div>
+
+
+		</div>
+
+		<script src="js/vue.js"></script>
+		<script>
+			let vm = new Vue({
+				el: '#app',
+				data: {
+					message: 'hello',
+					
+					didi: 'didi',
+        			family: 'family',
+        			dindex : 0,
+        			
+        			message1: 'hello',
+
+				},
+
+				mounted () {
+			      setInterval(() => {
+			        // 当缓存开关为false的时候，定时器每次打印的时间都是不一样的
+			        console.log(this.now)
+			      }, 1000)
+			    },
+				computed: {
+					//计算属性的getter函数
+			       changeMessage: {
+			        // 计算属性：依赖message变化而变化  依赖没变化就不会重新渲染；
+			        get () {
+			           return this.message + 'world'
+			        },
+			        set () {
+			        }
+			      },
+			      
+			      
+			      //2.计算属性的setter函数
+			      didiFamily:{
+			        //getter
+			        get:function(){
+			        	console.info( "======改变" );
+			          return this.didi + ' ' + this.family
+			        },
+			        //setter
+			        set:function(newValue){
+			          // 这里由于该计算属性被赋值，将被调用
+			          console.log("===newValue==="+newValue);
+			          this.didi = 123
+			          this.family = 456;
+			        }
+			      },
+			      
+			      //3.计算属性的缓存
+			      now:{
+			        cache: false,
+			        get:function(){
+			          return Date.now() + this.message1
+			        }
+			      }
+			    },
+				methods: {
+					changeDidi(){
+						this.didi = this.didi + "a";
+					},
+					changeDf(){
+						//赋值，调用setter函数
+						this.didiFamily = this.didiFamily + "b";
+					}
+					
+
+				}
+			});
+		</script>
+	</body>
+
+</html>

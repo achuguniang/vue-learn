@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>axios</title>
+
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div id="app" style="height: 100%;" v-cloak="">
+			<button @click="get_urlRequest">Get请求 -url携带参数</button>
+			<button @click="get_prRequest">Get请求 -params传值</button>
+
+			<button @click="get_prRequest">Post请求</button>
+			<button @click="allRequest">执行多个并发请求请求</button>
+
+		</div>
+
+		<script src="js/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+		<script>
+			let vm = new Vue({
+				el: "#app",
+				data: {
+					token: "ODk3NThBMUY4RUNDMEUwOQ=="
+				},
+
+				created: function() {
+
+				},
+
+				methods: {
+					get_urlRequest() {
+						// url携带参数
+						axios.get('http://jysz.jyyy.so/kf-service/api/preregistration/selectPatient?cardNo=301100011', {
+							headers: {
+								'token': this.token
+							}
+						}).then(function(response) {
+							console.log(response);
+						})
+						.catch(function(error) {
+							console.log(error);
+						});
+					},
+
+					get_prRequest() {
+						// params传值
+						axios.get('http://jysz.jyyy.so/kf-service/api/preregistration/selectPatient', {
+							headers: {
+								'token': this.token
+							},
+							params: {
+								cardNo: "301100011"
+							}
+						}).then(function(response) {
+							console.log(response);
+
+						}).catch(function(error) {
+							console.log(error);
+						});
+					},
+
+					postRequest() {
+						// params传值
+						axios.post('http://jysz.jyyy.so/kf-service/api/preregistration/selectPatient', {
+							headers: {
+								'token': this.token
+							},
+							params: {
+								cardNo: "301100011"
+							}
+						}).then(function(response) {
+							console.log(response);
+
+						}).catch(function(error) {
+							console.log(error);
+						});
+					},
+
+					get_prRequest1() {
+						return axios.get('http://jysz.jyyy.so/kf-service/api/preregistration/selectPatient', {
+							headers: {
+								'token': this.token
+							},
+							params: {
+								cardNo: "301100011"
+							}
+						})
+					},
+					postRequest1() {
+						return axios.get('json/post1.json');
+					},
+
+					allRequest() {
+						//执行多个并发请求,几个请求均完成之后在执行方法
+						var _this = this;
+						axios.all([_this.get_prRequest1(), _this.postRequest1()])
+							.then(axios.spread(function(acct, perms) {
+								console.info(acct);
+								console.info(perms);
+							}));
+					}
+				}
+
+			})
+		</script>
+
+	</body>
+
+</html>

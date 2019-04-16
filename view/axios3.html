@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>axios</title>
+	<style>
+		.current{
+			background-color:#ccc;
+		}
+	</style>
+	<script src="js/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+	
+</head>
+<body>
+	<div id="app">
+		<button @click="getAxios1"> get请求（url参数） </button>
+		<button @click="getAxios2"> get请求（参数分离） </button>
+
+	</div>
+	
+	
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+		const token = "0278b1c1b26b31866090795d8063babd8f76e36cf81ada2a6f362fd5657e861a";
+		let vm = new Vue({
+			el:'#app',
+			data:{
+				url : "http://jysz.jyyy.so/cloud-clinic/api/"
+			},
+			methods:{
+				getAxios(){
+					axios.get( this.url+"couples?token="+token,{
+						headers: {
+				            "token" : 1
+				        },
+					} )
+					.then( function( res ){
+						console.info( res );
+					} )
+					.catch( function( error ){
+						console.info( error );
+					} )
+					
+				},
+				getAxios2(){
+					axios.get( this.url+"couples",{
+						headers: {
+				            "token" : 1
+				        },
+				        params: {
+						    token: token
+						}
+					} )
+					.then( function( res ){
+						console.info( res );
+					} )
+					.catch( function( error ){
+						console.info( error );
+					} )
+					
+				},
+
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>watch</title>
+		<style>
+			.step {
+				height: 100px;
+				background: #eee;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div id="app">
+			<!--1 常规用法-->
+			<div class="step">
+				<h2>常规用法</h2>
+				<p>FullName: {{fullName}}</p>
+				<p>FirstName: <input type="text" v-model="firstName"></p>
+			</div>
+
+			<!--2----  value为方法名的用法-->
+			<div class="step">
+				<h2>value为方法名的用法</h2>
+				<p>姓名: {{name}}</p>
+			</div>
+
+			<!--3----  对象深度监听-->
+			<div class="step">
+				<h2>对象深度监听</h2>
+				<p>姓名: {{box.name}}</p>
+			</div>
+			
+			<div class="step">
+				<h2>非深度监听时 监听对象的某个属性</h2>
+				<p>标题: {{box.title}}</p>
+			</div>
+			
+			
+			<!--4----  数组监听-->
+			<div class="step">
+				<h2>数组监听</h2>
+				<button @click="boxArrayValueChange">改变数组值</button>
+				<p>数字: {{boxNum}}</p>
+			</div>
+			
+			<!--5----  immediate-->
+			<div class="step">
+				<h2>immediate</h2>
+			</div>
+			
+			<!--6----  watch 里的 value 可以是放在一个数组里面的多个 handler-->
+			<div class="step">
+				<h2>immediate</h2>
+			</div>
+
+		</div>
+
+		<script src="js/vue.js"></script>
+		<script>
+			let vm = new Vue({
+				el: '#app',
+				data: {
+					firstName: 'Dawei',
+					lastName: 'Lou',
+					fullName: '',
+
+					number: 1,
+
+					name: "李丹",
+
+					box: {
+						name: 'jordan',
+						title : ""
+					},
+					
+					boxArray : [1,1,1,1],
+					
+					boxNum : "",
+					
+					
+					imme : "",
+					
+					multi : ""
+
+				},
+
+				created() {
+					this.number = 2;
+					this.name = "李艳";
+					
+					this.box.name = 'kobe';
+					
+					this.boxArray[1] = 2;  //不会触发改变
+					
+					this.imme = 5;
+					
+					this.multi = 120;
+					
+					
+				},
+				watch: {
+					firstName(newName, oldName) {
+						this.fullName = newName + ' ' + this.lastName;
+					},
+
+					number(newVal, oldVal) {
+						console.log(newVal, oldVal)
+					},
+
+					name: "getName",
+
+					box: {
+						handler(newVal, oldVal) {
+							this.box.title = 'hello';
+						},
+						deep: true // 深度监听模式
+					},
+					
+					'box.name': {
+					    handler(newVal, oldVal) {
+					      console.log(newVal, oldVal)
+					      // kobe jordan
+					    }
+					 },
+					 
+					 boxArray: {
+						handler(newVal, oldVal) {
+							console.info("222=====");
+							this.boxNum = 100;
+						},
+						deep: true // 深度监听模式
+					},
+					
+					imme : {
+						handler(newVal, oldVal){
+//							console.info(newVal+"====="+oldVal);
+						},
+						immediate: true
+					},
+					
+					multi: [
+					    function foo (newVal, oldVal) {
+					      console.log(newVal, oldVal)
+					      // 2 1
+					    },
+					    function bar (newVal, oldVal) {
+					      console.log(newVal, oldVal)
+					      // 2 1
+					    }
+					  ]
+				},
+				methods: {
+					getName(newVal, oldVal) {
+						console.info("=====");
+					},
+					
+					boxArrayValueChange(){
+						Vue.set(this.boxArray, 1, 3);  //方法一
+//						this.boxArray.splice(1, 1, 6);   //方法2
+					}
+
+				}
+			});
+		</script>
+	</body>
+
+</html>

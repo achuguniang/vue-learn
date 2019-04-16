@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>vue-router</title>
+	</head>
+
+	<body>
+		<div id="app">
+			<!-- 5 路由入口 指定跳转到只定入口 -->
+			<router-link to="/User">用户</router-link>
+
+			<!-- 7 路由出口：用来展示匹配路由视图内容 -->
+			<router-view></router-view>
+
+		</div>
+
+		<script src="js/vue.js"></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+		<script>
+			// 3 创建两个组件
+			const User = Vue.component('user', {
+				template: `
+					 <div class="user">
+			          <h2>User Center</h2>
+			          <router-link to="/user/profile">个人资料</router-link>
+			          <router-link to="/user/posts">岗位</router-link>
+			          <!-- 子路由展示在此处 -->
+			          <router-view></router-view>
+			        </div>
+				`
+			})
+			
+			 // 子组件[简写]
+		    const UserProfile = {
+		      template: '<h3>个人资料：张三</h3>'
+		    }
+		    const UserPosts = {
+		      template: '<h3>岗位：FE</h3>'
+		    }
+
+
+			// 4 创建路由对象
+			const router = new VueRouter({
+				routes: [
+					{
+						path: '/user',
+						component: User,
+						 children: [
+				            {
+				              // 当 /user/profile 匹配成功，
+				              // UserProfile 会被渲染在 User 的 <router-view> 中
+				              path: 'profile',
+				              component: UserProfile
+				            },
+				            {
+				              // 当 /user/posts 匹配成功
+				              // UserPosts 会被渲染在 User 的 <router-view> 中
+				              path: 'posts',
+				              component: UserPosts
+				            }
+				          ]
+					},
+				]
+			})
+
+			let vm = new Vue({
+				el: "#app",
+				data() {
+					return {
+
+					}
+				},
+				router
+			})
+		</script>
+	</body>
+
+</html>

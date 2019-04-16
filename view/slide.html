@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		
+		
+		<div class="summary">
+			<div class="gallery">
+				<div class="product-img">
+					<div @click="prevImg" class="prev-arrow" :class="{'prev-active': galleryList.length - 3 <= 0 || this.offsetCount < 1}">
+						<img src="../assets/images/productDetail/left.png" alt="左箭头">
+					</div>
+					<ul>
+						<li class="list-img">
+							<div class="list-img-wrap" ref="carouser">
+								<div @click="getCurImg(item.ImageCode, index)" v-for="(item,index) in galleryList" :key="index" class="single-img" :class="{'img-activce': item.ImageCode == curCode && imgActive}">
+									<img :src="item.ImageCode" alt="缩略图">
+								</div>
+							</div>
+						</li>
+					</ul>
+			            <div @click="nextImg" class="next-arrow" :class="{'next-active': galleryList.length - 3 <= 0 || offsetCount >= galleryList.length - 3 }">
+					        <img src="../assets/images/productDetail/right.png" alt="右箭头">
+				       </div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
