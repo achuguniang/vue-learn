@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>vue-router</title>
+</head>
+
+<body>
+	<div id="app">
+		<div>
+			<h1>动态路由匹配</h1>
+			<router-link to="/home/1">首页</router-link>
+			<router-link to="/login">登录</router-link>
+
+			<!-- 路由出口：用来展示匹配路由视图内容 -->
+			<router-view></router-view>
+
+			<!-- 命名视图 -->
+			<h1>命名视图</h1>
+			<router-view name="a"></router-view>
+			<router-view name="b"></router-view>
+
+			<!-- 嵌套命名视图 -->
+			<router-view name='c'></router-view>
+		</div>
+
+
+	</div>
+
+	<script src="js/vue.js"></script>
+	<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+	<script>
+		// 3 创建两个组件
+		const Home = Vue.component('home', {
+			template: '<h1>这是 Home 组件</h1>'
+		})
+		const Login = Vue.component('login', {
+			template: '<h1>这是 Login 组件<router-view></router-view></h1>'
+		})
+
+		const A = Vue.component('A', {
+			template: '<h1>这是 A 组件</h1>'
+		})
+		const B = Vue.component('B', {
+			template: '<h1>这是 B 组件</h1>'
+		})
+		const C = Vue.component('C', {
+			template: '<h1>这是 C 组件</h1>'
+		})
+		// 4 创建路由对象
+		const router = new VueRouter({
+			routes: [
+				// 路径和组件一一对应
+				{
+					path: '/',
+					redirect: '/home/2'
+				},
+				{
+					// 动态路由匹配
+					path: '/home/:id',
+					component: Home
+				},
+				{
+					path: '/login',
+					component: Login,
+					// 嵌套路由
+					children: [{
+							path: 'com1',
+							name: 'com1',
+							component: {
+								template: '<div>com1</div>',
+								// 嵌套命名视图
+								c: C,
+							}
+						},
+						{
+							path: 'com2/:comId',
+							name: 'com2',
+							component: {
+								
+								template: '<div>com2</div>'
+							}
+						}
+					]
+				},
+				{
+					path: '/login1',
+					component: Login,
+					// 命名视图
+					components: {
+						default: B,
+						a: A,
+						b: B
+					}
+				}
+			]
+		})
+
+		let vm = new Vue({
+			el: "#app",
+			data() {
+				return {
+
+				}
+			},
+			watch: {
+				'$route': function (to, from) {
+					console.log('watch-$route');
+					console.log(to);
+					console.log(from);
+				}
+			},
+			router
+		})
+	</script>
+</body>
+
+</html>
