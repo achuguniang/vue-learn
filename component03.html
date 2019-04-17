@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue.js 父子组件通信的1212种方式</title>
+    <style>
+        .step {
+            min-height: 100px;
+            background: #eee;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="app">
+        <!--1  Prop-->
+        <div class="step">
+            <h2> Prop</h2>
+            <div>
+                <child :content="message"></child>
+            </div>
+        </div>
+
+        <!--2  $emit-->
+        <div class="step">
+            <h2> $emit</h2>
+            <div>
+                <my-button @greet="sayHi"></my-button>
+            </div>
+        </div>
+
+        <!--3  .sync 修饰符-->
+        <!-- 自动更新父组件属性的 v-on 监听器;让我们手动进行更新父组件中的值 -->
+        <div class="step">
+            <h2>.sync 修饰符</h2>
+            <div>
+                <login :name.sync="userName"></login> {{ userName }}
+            </div>
+        </div>
+
+        <!--4  $attrs & $listeners-->
+
+        <!-- $attrs :包含了父作用域中不作为 prop 被识别 (且获取) 的特性绑定 (class 和 style 除外)。
+        当一个组件没有声明任何 prop 时，这里会包含所有父作用域的绑定 (class 和 style 除外)，并
+        且可以通过 v-bind="$attrs" 传入内部组件——在创建高级别的组件时非常有用 -->
+
+        <!-- $listeners: 包含了父作用域中的 (不含 .native 修饰器的) v-on 事件监听器。它可以通过 
+        v-on="$listeners" 传入内部组件——在创建更高层次的组件时非常有用。 -->
+
+        <!-- $attrs 和 $listeners 属性像两个收纳箱，一个负责收纳属性，一个负责收纳事件，
+        都是以对象的形式来保存数据 -->
+
+        <div class="step">
+            <h2>$attrs & $listeners</h2>
+            <div>
+                <child-listen :foo="foo" :bar="bar" @one.native="triggerOne" @two="triggerTwo">
+                </child-listen>
+            </div>
+        </div>
+
+        <!--5. provide & inject-->
+        <!-- 允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效 -->
+        <!-- 该版本vue不兼容 -->
+
+        <div class="step">
+            <h2>provide & inject</h2>
+            <div>
+                <son></son>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="js/vue.js"></script>
+
+    <script>
+        /*
+         *Prop（常用）
+         *$emit (组件封装用的较多)
+         *.sync语法糖 （较少）
+         *$attrs & $listeners (组件封装用的较多)
+         *provide & inject （高阶组件/组件库用的较多）
+         *slot-scope & v-slot （vue@2.6.0+）新增
+         *scopedSlots 属性
+         */
+
+        let Child = Vue.extend({
+            template: '<h2>{{ content }}</h2>',
+            props: {
+                content: {
+                    type: String,
+                    default: () => {
+                        return 'from child'
+                    }
+                }
+            }
+        })
+
+
+
+        let MyButton = Vue.extend({
+            template: '<button @click="triggerClick">click</button>',
+            data() {
+                return {
+                    greeting: 'vue.js!'
+                }
+            },
+            methods: {
+                triggerClick() {
+                    this.$emit('greet', this.greeting)
+                }
+            }
+        })
+
+        let Login = Vue.extend({
+            template: `
+                <div class="input-group">
+                <label>姓名:</label>
+                <input v-model="text">
+                </div>
+            `,
+            props: ['name'],
+            data() {
+                return {
+                    text: ''
+                }
+            },
+            watch: {
+                text(newVal) {
+                    this.$emit('update:name', newVal)
+                }
+            }
+        })
+
+
+        let ChildListen = Vue.extend({
+            template: '<h2>{{ foo }}</h2>',
+            props: ['foo'],
+            created() {
+                console.log(this.$attrs, this.$listeners)
+                // -> {bar: "parent bar"}
+                // -> {two: fn}
+
+                // 这里我们访问父组件中的 `triggerTwo` 方法
+                // this.$listeners.two()
+                // -> 'two'
+            }
+        })
+
+        let Son = Vue.extend({
+            template: '<h2>son</h2>',
+            // inject: {
+            //     house: {
+            //         default: '没房'
+            //     },
+            //     car: {
+            //         default: '没车'
+            //     },
+            //     money: {
+            //         default: '￥4500'
+            //     }
+            // },
+            created() {
+                console.log(this.house, this.car, this.money)
+            }
+        })
+
+
+
+
+        let vm = new Vue({
+            el: '#app',
+            provide: {
+                house: '房子',
+                car: '车子',
+                money: '￥10000'
+            },
+            data: {
+                message: 'from parent',
+                userName: '',
+
+
+                foo: 'parent foo',
+                bar: 'parent bar'
+            },
+
+            mounted() {
+
+            },
+
+            components: {
+                Child,
+                MyButton,
+                Login,
+                ChildListen,
+                Son
+            },
+
+            methods: {
+                sayHi(val) {
+                    alert('Hi, ' + val);
+                },
+
+                triggerOne() {
+                    alert('one')
+                },
+                triggerTwo() {
+                    alert('two')
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

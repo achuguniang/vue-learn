@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>component 父子通讯</title>
+    <style>
+        .step {
+            min-height: 100px;
+            background: #eee;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="app">
+        <!--1 父组件到子组件-->
+        <div class="step">
+            <h2>父组件到子组件</h2>
+            <div>
+                <!-- 如果需要往子组件总传递父组件data中的数据 需要加v-bind="数据名称" -->
+                <hello v-bind:msg="info"></hello>
+                <!-- 如果传递的是字面量 那么直接写-->
+                <hello my-msg="abc"></hello>
+            </div>
+
+        </div>
+
+
+        <!--2 子组件到父组件-->
+        <div class="step">
+            <h2>父组件到子组件</h2>
+            <div>
+                <hello1 @pfn="parentFn"></hello1>
+            </div>
+        </div>
+
+        <!--3 非父子组件通讯-->
+        <div class="step">
+            <h2>非父子组件通讯</h2>
+            <div>
+                <!-- 组件A： -->
+                <com-a></com-a>
+                <!-- 组件B： -->
+                <com-b></com-b>
+            </div>
+        </div>
+
+        <!--4 内容分发-->
+        <div class="step">
+            <h2>非父子组件通讯</h2>
+            <div>
+                <slot-example>
+                    <!-- 如果只有一个slot插槽 那么不需要指定名称 -->
+                    <p slot="moon">我是slot添加进来的内容</p>
+                </slot-example>
+            </div>
+        </div>
+
+        <!--5 获取组件（或元素） - refs-->
+        <div class="step">
+            <h2>非父子组件通讯</h2>
+            <div>
+                <slot-example>
+                    <!-- 如果只有一个slot插槽 那么不需要指定名称 -->
+                    <p slot="moon">我是slot添加进来的内容</p>
+                </slot-example>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/vue.js"></script>
+
+    <script>
+        Vue.component('hello1', {
+            template: '<button @click="fn">按钮</button>',
+            methods: {
+                // 子组件：通过$emit调用
+                fn() {
+                    this.$emit('pfn', '这是子组件传递给父组件的数据')
+                }
+            }
+        })
+
+        // 中间组件
+        var bus = new Vue()
+
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                info: 15
+            },
+
+            mounted() {
+                console.info( this.$refs.dv ); //获取到元素
+                console.info( this.$refs.my );//获取到组件
+            },
+
+            components: {
+                hello: {
+                    // 创建props及其传递过来的属性
+                    props: ['msg', 'myMsg'],
+                    template: '<h1>这是 hello 组件，这是消息：{{msg}} --- {{myMsg}}</h1>'
+                },
+
+                comA: {
+                    template: '<button @click="emitFn">告诉B</button>',
+                    methods: {
+                        emitFn() {
+                            // 触发中间组件中的自定义事件
+                            bus.$emit('tellComB', '土豆土豆我是南瓜')
+                        }
+                    }
+                },
+                comB: {
+                    template: '<p>组件A告诉我：{{msg}}</p>',
+                    data() {
+                        return {
+                            msg: ''
+                        }
+                    },
+                    created() {
+                        // 给中间组件绑定自定义事件 注意:如果用到this 需要用箭头函数
+                        bus.$on('tellComB', (msg) => {
+                            this.msg = msg
+                        })
+                    }
+                },
+
+
+
+                slotExample: {
+                    template: `
+                    <div>
+                        <p>我是slot</p>
+                        <slot name="moon"></slot>
+                    </div>
+                    `
+                },
+
+
+                my: {
+                    template: `<a>sss</a>`
+                }
+
+            },
+
+            methods: {
+                // 父组件：提供方法
+                parentFn(data) {
+                    console.log('父组件：', data)
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

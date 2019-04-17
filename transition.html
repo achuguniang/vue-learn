@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>transition</title>
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+</head>
+<style>
+    .fade-leave-active {
+        /* 类名：显示到隐藏过程所需要的时间 */
+        /* reverse表示和隐藏到显示动画相反 */
+        animation: bounce-in .5s reverse;
+    }
+
+    @keyframes bounce-in {
+        0% {
+            transform: scale(0);
+        }
+
+        50% {
+            transform: scale(1.5);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+
+    /** 方块元素的样式 **/
+    .list-item {
+        display: inline-block;
+        margin-right: 10px;
+        background-color: orange;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        color: #ffffff;
+    }
+
+    /** 插入过程 **/
+    .list-enter-active {
+        transition: all 1s;
+    }
+
+    /** 移除过程 **/
+    .list-leave-active {
+        transition: all 1s;
+    }
+
+    /*** 开始插入、移除结束的位置变化 ***/
+    .list-enter,
+    .list-leave-to {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+</style>
+
+<body>
+    <div id="app">
+        <button @click="show = !show">show toggle</button>
+        <transition name="fade"> //fade 自定义名称
+            <p v-if="show">hello</p>
+        </transition>
+
+        <transition enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
+            <p v-if="show">hello</p>
+        </transition>
+
+        <transition :duration="{ enter: 800, leave: 1000 }" enter-active-class="animated tada"
+            leave-active-class="animated bounceOutRight">
+            <p v-if="show">hello</p>
+        </transition>
+
+        <div id="list-demo" class="demo">
+            <button v-on:click="add">插入一个元素</button>
+            <button v-on:click="remove">移除一个元素</button>
+            <transition-group name="list" tag="p">
+                <span v-for="item in items" v-bind:key="item" class="list-item">
+                    {{ item }}
+                </span>
+            </transition-group>
+        </div>
+
+
+    </div>
+
+    <script src="js/vue.js"></script>
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                show: true,
+
+
+                items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                nextNum: 10
+            },
+
+            mounted() {
+
+            },
+
+
+            methods: {
+                randomIndex: function () {
+                    return Math.floor(Math.random() * this.items.length)
+                },
+                add: function () {
+                    this.items.splice(this.randomIndex(), 0, this.nextNum++)
+                },
+                remove: function () {
+                    this.items.splice(this.randomIndex(), 1)
+                },
+            }
+        });
+    </script>
+</body>
+
+</html>

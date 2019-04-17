@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>component基本用法</title>
+    <style>
+        .step {
+            min-height: 100px;
+            background: #eee;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="app">
+        <!--1 全局组件-->
+        <div class="step">
+            <h2>全局组件</h2>
+            <div>
+                <my-component></my-component>
+                <my-component-a></my-component-a>
+                <home></home>
+            </div>
+
+        </div>
+
+        <!--2 局部组件-->
+        <div class="step">
+            <h2>局部组件</h2>
+            <div>
+                <child></child>
+                <child-a></child-a>
+
+                <ul>
+                    <li is="my-li"></li>
+                    <li is="my-li"></li>
+                    <li is="my-li"></li>
+                </ul>
+            </div>
+        </div>
+
+        <!--3 is特性-->
+        <div class="step">
+            <h2>is特性</h2>
+            <div>
+                <ul>
+                    <li is="my-li"></li>
+                    <li is="my-li"></li>
+                    <li is="my-li"></li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="js/vue.js"></script>
+    <script type="text/x-template" id="tpl">
+        <p>A custom component js Tpl!</p>
+    </script>
+    <script>
+        /*
+         *1 注册全局组件
+         *template 只能有一个根元素
+         *组件中的 `data` 必须是函数 并且函数的返回值必须是对象
+         */
+        Vue.component('my-component', {
+            template: '<p>A custom component!</p>',
+            data() {
+                return {
+                    msg: '注意：组件的data必须是一个函数！！！'
+                }
+            }
+        })
+        Vue.component('my-component-a', {
+            template: '#tpl',
+            data() {
+                return {
+                    msg: '注意：组件的data必须是一个函数！！！'
+                }
+            }
+        })
+
+        var Home = Vue.extend({
+            template: '<p>保持好的学习习惯！</p>',
+            data() {}
+        })
+        Vue.component('home', Home)
+
+
+        var Child = {
+            template: '<div>可不可以!</div>'
+        }
+
+        let vm = new Vue({
+            el: '#app',
+            data: {
+
+
+            },
+
+            mounted() {
+
+            },
+
+            components: {
+                child: Child,
+
+                childA: {
+                    template: '<div>云烟成雨！</div>',
+                    data() {}
+                },
+
+                myLi: {
+                    template: `<li>岁月神偷</li>`
+                }
+            },
+
+            methods: {
+
+            }
+        });
+    </script>
+</body>
+
+</html>
